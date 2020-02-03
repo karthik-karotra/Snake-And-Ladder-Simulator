@@ -27,21 +27,22 @@ function checkingNoPlayOrLadderOrSnake() {
 		$SNAKE)
 			echo "OOPS!!!You were eaten by a snake"
 			currentPosition=$(($currentPosition - $dieValue))
-			restartsToZero
+			restartsToZeroOrTillExactWinningPosition -lt 0 +
 			echo $currentPosition
 			;;
 		$LADDER)
 			echo "Yeah!! You just climb a ladder"
 			currentPosition=$(($currentPosition + $dieValue))
+			restartsToZeroOrTillExactWinningPosition -gt 100 -
 			echo $currentPosition
 			;;
 	esac
 }
 
-function restartsToZero() {
-	if [ $currentPosition -lt 0 ]
+function restartsToZeroOrTillExactWinningPosition() {
+	if [ $currentPosition $1 $2 ]
 	then
-		currentPosition=$(($currentPosition + $dieValue))
+		currentPosition=$(($currentPosition $3 $dieValue))
 	fi
 }
 
