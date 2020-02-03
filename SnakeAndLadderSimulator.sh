@@ -10,11 +10,13 @@ LADDER=2
 WINNING_POSITION=100
 
 currentPosition=0
+dieCount=0
 
 function rollingTheDie() {
 	dieValue=$((RANDOM%6+1))
 	echo "Die number generated is $dieValue"
 	checkingNoPlayOrLadderOrSnake
+	((dieCount++))
 }
 
 function checkingNoPlayOrLadderOrSnake() {
@@ -50,3 +52,4 @@ while [ $currentPosition -ne $WINNING_POSITION ]
 do
 	rollingTheDie
 done
+echo "No of times Die was played is $dieCount"
