@@ -1,4 +1,5 @@
-#!/bin/bash 
+#!/bin/bash
+
 echo "Welcome to Snake and Ladder Simulator"
 
 #CONSTANTS
@@ -9,47 +10,64 @@ SNAKE=1
 LADDER=2
 WINNING_POSITION=100
 
-currentPosition=0
+#VARIABLE
 dieCount=0
 
 function rollingTheDie() {
 	dieValue=$((RANDOM%6+1))
-	echo "Die number generated is $dieValue"
-	checkingNoPlayOrLadderOrSnake
 	((dieCount++))
 }
 
 function checkingNoPlayOrLadderOrSnake() {
 	case $((RANDOM%3)) in
 		$NO_PLAY)
-			echo "There's no progress in your position" 
-			currentPosition=$currentPosition
-			echo $currentPosition
+			player=$1
+			echo $player
 			;;
 		$SNAKE)
-			echo "OOPS!!!You were eaten by a snake"
-			currentPosition=$(($currentPosition - $dieValue))
+			player=$(($1 - $2))
 			restartsToZeroOrTillExactWinningPosition -lt 0 +
-			echo $currentPosition
+			echo $player
 			;;
 		$LADDER)
-			echo "Yeah!! You just climb a ladder"
-			currentPosition=$(($currentPosition + $dieValue))
+			player=$(($1 + $2))
 			restartsToZeroOrTillExactWinningPosition -gt 100 -
-			echo $currentPosition
+			echo $player
 			;;
 	esac
 }
 
 function restartsToZeroOrTillExactWinningPosition() {
-	if [ $currentPosition $1 $2 ]
+	if [ $player $1 $2 ]
 	then
-		currentPosition=$(($currentPosition $3 $dieValue))
+		player=$(($currentPosition $3 $dieValue))
 	fi
 }
 
-while [ $currentPosition -ne $WINNING_POSITION ]
-do
-	rollingTheDie
-done
-echo "No of times Die was played is $dieCount"
+function startGame() {
+	player1=0
+	player2=0
+	currentPlayer=-1
+	SWITCH=-1
+	while [[ $player1 -ne $WINNING_POSITION && $player2 -ne $WINNING_POSITION ]]
+	do
+		if [ $currentPlayer -eq -1 ]
+		then
+			rollingTheDie
+			player1=$(checkingNoPlayOrLadderOrSnake $player1 $dieValue)
+			if [ $player1 -eq $WINNING_POSITION ]
+			then
+				echo "Player 1 Wins"
+			fi
+		else
+			rollingTheDie
+			player2=$(checkingNoPlayOrLadderOrSnake $player2 $dieValue)
+			if [ $player2 -eq $WINNING_POSITION ]
+			then
+				echo "Player 2 Wins"
+			fi
+		fi
+		currentPlayer=$(($currentPlayer*$SWITCH))
+	done
+}
+startGame
